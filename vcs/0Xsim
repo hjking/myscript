@@ -1,0 +1,92 @@
+#!/bin/csh -f
+
+# ============================================ #
+#	VCS Lincence Setup
+# ============================================ #
+setenv LM_LICENSE_FILE 27000@fusion1
+
+
+# ============================================ #
+#	VCS Environment Setup
+# ============================================ #
+setenv VCS_HOME /cadtools/vcs/vcsY-2006.06-SP2
+set path = ( $path $VCS_HOME/bin )
+
+
+# ============================================ #
+#	User Define Simlulation Environment
+# ============================================ #
+setenv USER_OBJECT_DIR		/tmp/${USER}/object
+setenv USER_SIMV_DIR		/tmp/${USER}/simv
+setenv USER_WAVE_DIR		/tmp/${USER}/wave
+setenv USER_LOG_DIR			/tmp/${USER}/log
+
+setenv WAVE_FILE			test.fsdb
+setenv LOG_FILE				vcs_sim.log
+
+if (! -d ${USER_OBJECT_DIR}) then
+	mkdir -p ${USER_OBJECT_DIR}
+endif
+if (! -d ${USER_WAVE_DIR}) then
+	mkdir -p ${USER_WAVE_DIR}
+endif
+if (! -d ${USER_LOG_DIR}) then
+	mkdir -p ${USER_LOG_DIR}
+endif
+
+
+setenv VERILOG_WAVE_FILE	wave_dump_define.v
+echo \`define USER_WAVE_FILE  \"${USER_WAVE_DIR}/${WAVE_FILE}\" > ${VERILOG_WAVE_FILE}
+
+cp $USER_LOG_DIR/$LOG_FILE $USER_LOG_DIR/$LOG_FILE.back
+
+set COVERAGE_TRIGGER = OFF
+if( ${COVERAGE_TRIGGER} == ON ) then
+    setenv COVERAGE \
+    "-cm line+fsm+cond+tgl \
+    -cm_dir ./sim.cm \
+    -cm_name vcm \
+    -cm_cond tf \
+    -cm_tgl mda \
+    -cm_hier cm.conf"
+else
+    setenv COVERAGE ""
+endif
+
+
+# ============================================ #
+#	Time Stamp (Start)
+# ============================================ #
+date > sim.time
+
+
+# ============================================ #
+#	Simulation Script
+# ============================================ #
+vcs	\
+#	-ova_inline -ova_debug -ova_cov 							\
+	-R  -PP -Mupdate									                            \
+	-l ${USER_LOG_DIR}/${LOG_FILE}								                    \
+	+vcsd											                                \
+	+v2k											                                \
+    $COVERAGE                                                                       \
+	-P /cadtools/novas/Novas-200810/share/PLI/vcsd_latest/LINUX/vcsd.tab			\
+	 /cadtools/novas/Novas-200810/share/PLI/vcsd_latest/LINUX/pli.a +vcsd			\
+	+fsdb_autoflush										                            \
+	+lint=PCWM										                                \
+	-notice											                                \
+	-Mdir=${USER_OBJECT_DIR}								                        \
+	-o ${USER_SIMV_DIR}									                            \
+	+notimingcheck										                            \
+	-timescale=1ps/1ps									                            \
+	+define+PLL_resolution_1ps								                        \
+	+incdir+.										                                \
+	+libext+.v+.vcs+.vp									\
+	${VERILOG_WAVE_FILE}									\
+	-f ./tree.file
+
+
+# ============================================ #
+#	Time Stamp (End)
+# ============================================ #
+date >> sim.time

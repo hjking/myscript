@@ -1,0 +1,221 @@
+#!/bin/csh -f
+
+# ============================================ #
+#	VCS Lincence Setup
+# ============================================ #
+#setenv LM_LICENSE_FILE 27000@earth:27000@art0:27001@yarrow
+setenv LM_LICENSE_FILE 27000@fusion1:27001@earth:1783@earth
+
+
+# ============================================ #
+#	VCS Environment Setup
+# ============================================ #
+#setenv VCS_HOME /cadtools/vcs/vcsX-2005.06-SP2
+#
+#set path = ( $path $VCS_HOME/bin )
+#
+#if ( `uname -r` == "2.6.9-5.ELsmp" ) then
+#        setenv VCS_ARCH_OVERRIDE suse9
+#	setenv VCS_HOME /cadtools/vcs/vcsX-2005.06-SP2
+#endif
+setenv VCS_HOME /cadtools/vcs/vcsY-2006.06-SP2
+set path = ( $path $VCS_HOME/bin )
+
+
+# ============================================ #
+#	VERA Environment Setup
+# ============================================ #
+
+#setenv VERA_HOME /cadtools/vera/X-2005.06-SP1/vera_vX-2005.06-SP1_linux
+#set path = ($path $VERA_HOME/bin)
+
+#setenv DESIGNWARE_HOME /cadlibs/vcs/synopsys/UHip26a
+
+
+# ============================================ #
+#	User Define Simlulation Environment
+# ============================================ #
+setenv USER_OBJECT_DIR		/tmp/${USER}/sim0/object
+setenv USER_SIMV_DIR		/tmp/${USER}/sim0/simv
+setenv USER_WAVE_DIR		/tmp/${USER}/sim0/wave
+setenv USER_LOG_DIR		.
+
+setenv WAVE_FILE			test.fsdb
+setenv LOG_FILE				vcs_sim.log
+
+setenv SKIP_CELL_INSTANCE
+
+if (! -d ${USER_OBJECT_DIR}) then
+	mkdir -p ${USER_OBJECT_DIR}
+endif
+if (! -d ${USER_WAVE_DIR}) then
+	mkdir -p ${USER_WAVE_DIR}
+endif
+if (! -d ${USER_LOG_DIR}) then
+	mkdir -p ${USER_LOG_DIR}
+endif
+
+
+setenv VERILOG_WAVE_FILE	wave_dump_define.v
+echo \`define USER_WAVE_FILE  \"${USER_WAVE_DIR}/${WAVE_FILE}\" 
+echo \`define USER_WAVE_FILE  \"${USER_WAVE_DIR}/${WAVE_FILE}\" > ${VERILOG_WAVE_FILE}
+
+
+# ============================================ #
+#	DDR2MC vendor Macro Switch
+# ============================================ #
+# 難読化のスイッチ
+# DDR2MC ENC Macro Switch :(Use SubSystemVerilogModel(no Use IBM Model))
+#	DDR2MC ENC Macro Use   : set USE_ENC_DDR2MC = ONをDefine
+#                            set USE_ENC_DDR2MC = OFFをComment Out
+#	DDR2MC ENC Macro Use   : set USE_ENC_DDR2MC = ONをDefine
+#                            set USE_ENC_DDR2MC = OFFをComment Out
+# DDR2MCマクロのスイッチ
+#	SubSystem Model Use    : set USE_MACRO_SW = ONをDefine
+#							 set USE_MACRO_SW = OFFをComment Out
+#	SubSystem Model No Use : set USE_MACRO_SW = ONをComment Out
+#							 set USE_MACRO_SW = OFFをDefine
+
+#set USE_ENC_DDR2MC = ON
+set USE_ENC_DDR2MC = OFF
+
+#set USE_IBM_MACRO_SW = ON
+set USE_IBM_MACRO_SW = OFF
+
+if ( ${USE_ENC_DDR2MC} == ON ) then
+	setenv IBM_MODEL_SW ""
+	setenv SUB_SYSTEM_TREE sub_system_enc.tree
+else
+	if ( ${USE_IBM_MACRO_SW} == ON ) then
+		setenv IBM_MODEL_SW +define+_tb_IBM_MODEL_
+		setenv SUB_SYSTEM_TREE sub_system.tree
+	else
+		setenv IBM_MODEL_SW ""
+		setenv SUB_SYSTEM_TREE sub_system_behavior.tree
+	endif
+endif
+
+
+# ============================================ #
+#	Vendor Lib Set
+# ============================================ #
+# ベンダライブラリが必要な場合はif分のON以下をカスタマイズすること
+# 下記はIBM使用時の例となる。
+#
+
+set USE_VENDOR_LIB_SW = ON
+#set USE_VENDOR_LIB_SW = OFF
+
+if ( ${USE_VENDOR_LIB_SW} == ON ) then
+	setenv VENDOR_LIBLARY \
+	"-y ./liblink/STANDARD_LIB/ibm_cu08/v7.0fix/verilog \
+	-y ./liblink/STANDARD_LIB/ibm_cu08/v7.0/verilog \
+	-y ./liblink/CUSTOM_LIB/verilog	\
+	-y ./liblink/CUSTOM_LIB/verilog_wrapper	"
+else
+	setenv VENDOR_LIBLARY ""
+endif
+
+
+# ============================================ #
+#	Coverage Select
+# ============================================ #
+#	Use VCS Coverage  : 引数が入力されたらCoverage ON
+#
+
+setenv CM_NAME vcm$1
+
+if ( ${1} == "" ) then
+	setenv COVERAGE ""
+else
+	setenv COVERAGE	\
+	"-cm line+fsm+cond+tgl \
+	-cm_dir ./simv.cm \
+	-cm_name ${CM_NAME} \
+	-cm_hier cm.conf "
+endif
+
+
+setenv PAT_NUMBER           $1
+
+echo "./simlink/SIMTASK/BCHG_TASK/BCHG_PATTERN$1.inc"
+
+# ============================================ #
+#	Time Stamp (Start)
+# ============================================ #
+date > sim.time
+
+
+# ============================================ #
+#	Simulation Script
+# ============================================ #
+vcs	\
+#	-ova_inline \
+#	-ova_debug \
+#	-ova_cov 							\
+#	-ova_enable_diag	\
+#	-ova_cov_events	\
+#	-ova_report	\
+#	-ova_verbose	\
+#	-ova_filter	\
+	${COVERAGE}									\
+	-R  -PP -Mupdate							\
+#	+prof										\
+	-l ${USER_LOG_DIR}/${LOG_FILE}				\
+	+vcsd										\
+	+v2k										\
+	+memcbk										\
+#	-vera										\
+#	-Xmangle=28									\
+#	-line +cli+4								\
+	+define+_NOVAS_DUMP_						\
+	${IBM_MODEL_SW}								\
+	-P /cadtools/novas61v1/share/PLI/vcsd2005.06/LINUX/vcsd.tab				\
+	/cadtools/novas61v1/share/PLI/vcsd2005.06/LINUX/pli.a +vcsd				\
+	+fsdb_autoflush								\
+	+lint=PCWM									\
+#	+nowarnTFNPC								\
+#	+race=all									\
+	-notice										\
+#	+rad										\
+#	+radlite									\
+#	+noportcoerce								\
+	-Mdir=${USER_OBJECT_DIR}					\
+	-o ${USER_SIMV_DIR}							\
+	+notimingcheck								\
+	-timescale=1ps/1ps							\
+	+define+PLL_resolution_1ps					\
+#	-lmc-swift									\
+	+incdir+.									\
+	+libext+.v+.vcs+.vp							\
+	+define+IBM_RTL_WRAPPER						\
+#	+define+IBM_RTL_NOQEE						\
+#	-y ./simlink/LIB_CU11						\
+	${VENDOR_LIBLARY}							\
+	${VERILOG_WAVE_FILE}						\
+    +define+ENCRIPTED_RUN						\
+    +define+_sim_scenario_no=${PAT_NUMBER}+     \
+	-file ${SUB_SYSTEM_TREE}					\
+#	-f ./simlink/OVA/ova.tree					\
+#-----------------------------------------------\
+# -> system verilog setting : WC_OVERLOAD		\
+# マクロについて								\
+#   __WC_OVERLOAD__ :							\
+#		- Write Complete Modelのインスタンス	\
+#	__test_wc_overload__ : 通常OFF				\
+#		- Write Complete Modelの簡易確認環境ON  \
+#-----------------------------------------------\
+#	-debug_pp									\
+#	+define+__WC_OVERLOAD__						\
+#	+define+__test_wc_overload__ 				\
+#	+systemverilogext+.sv 						\
+#	./simlink/MODEL/WC_OVERLOAD/wc_overload.sv	\	
+# ----- [End Of VCS Script] ----- #
+
+
+# ============================================ #
+#	Time Stamp (End)
+# ============================================ #
+date >> sim.time
+
+

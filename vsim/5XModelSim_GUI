@@ -1,0 +1,28 @@
+#! /bin/csh -f
+
+# ============================================ #
+#	Lincence Setup
+# ============================================ #
+setenv LM_LICENSE_FILE 1717@earth
+
+# ============================================ #
+#	Environment Setup
+# ============================================ #
+setenv MODELSIM_HOME /cadtools/modelsim6.4b/modeltech/
+set path = ($MODELSIM_HOME/linux $path)
+
+if ("fusion1" == `hostname`) then
+	echo "Do not use this server. This server is for text editor."
+	exit
+endif
+
+if ( `cat /proc/loadavg | /usr/bin/perl -lane 'print @F[0] < 2'` != 1 ) then
+	echo "Do not use this server. This server is high load average now."
+	exit
+endif
+
+
+# ============================================ #
+#       Start-up ModelSim-SE GUI
+# ============================================ #
+vsim

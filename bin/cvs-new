@@ -1,0 +1,17 @@
+#!/bin/bash
+
+cvs status 2 > /dev/null | grep "File: " > ~/temp/cvs_new_temp
+
+count = 0
+rm -r ~/temp/cvs_new_temp_second &> /dev/null
+while read line
+do
+    line = ${line#File: }
+    line = ${line%Status:*}
+    echo $line >> ~/temp/cvs_new_temp_second
+    ((count++))
+done < ~/temp/cvs_new_temp
+
+find . -type f -name "*" | grep -v "/deploy\|/classes\|CVS" > /tmp/cvs_new_temp_third
+
+grep -v -f /tmp/cvs_new_temp_second /tmp/cvs_new_temp_third    | sed 's#\(.*\)#\x1b[1;31m\1\x1b[00m#'

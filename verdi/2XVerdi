@@ -1,0 +1,34 @@
+#!/bin/csh -f
+
+# ============================================ #
+#       User Define Verdi Environment
+# ============================================ #
+#setenv TIME_INFO			`date +%H%M`
+#setenv WAVE_FILE			test_SEED_$2_TIME_${TIME_INFO}.fsdb
+setenv USER_WAVE_DIR        /tmp/${USER}/wave
+setenv WAVE_FILE			test_000.fsdb
+setenv USER_WAVE_FILE  		${USER_WAVE_DIR}/${WAVE_FILE}
+
+# -------------------------------------------- #
+#       Tool Select
+# -------------------------------------------- #
+set path = ( /cadtools/novas/Novas-200910/bin $path )
+setenv LM_LICENSE_FILE 5219@fusion1
+
+
+# ============================================ #
+#       Invoke Wave Viewer
+# ============================================ #
+
+verdi	\
+    -nologo                                                     \
+	-2001														\
+    -autoalias                                                  \
+	-sv															\
+	+verilog2001ext+.v+.V										\
+    +systemverilogext+.sv+.SV                                   \
+	+notimingcheck												\
+	+libext+.v+.vcs+.vp											\
+	+pulse_r/0 +pulse_e/0 +transport_path_delays				\
+	-f ./pj.tree                                                \
+	-ssf ${USER_WAVE_FILE} &

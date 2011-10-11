@@ -1,0 +1,42 @@
+#!/bin/bash
+
+find . -type f -name "*" | grep -v ".*/CVS.*" > /tmp/cvs_dirty_temp
+
+declare -a FILES_MODIFIED
+declare -a FILES_NEW
+
+while read line
+do
+  if cvs status $line 2> /dev/null | grep "Modified" &> /dev/null
+  then
+  FILES_MODIFIED[${#FILES_MODIFIED[*]}]=$line
+  fi
+
+  if cvs status $line 2> /dev/null | grep "Unknown" &> /dev/null
+  then
+  FILES_NEW[${#FILES_NEW[*]}]=$line
+  fi
+done < /tmp/cvs_dirty_temp
+
+if [ ${#FILES_MODIFIED[*]} -gt 0 ]
+then
+  echo "Modified Files: " | sed 's#\(.*\)#\x1b[1;31m\1\x1b[00m#'
+  count=0
+  while [ $count -lt ${#FILES_MODIFIED[*]} ]    
+  do
+     echo ${FILES_MODIFIED[$count]}
+     ((count++))
+  done
+fi
+
+if [ ${#FILES_MODIFIED[*]} -gt 0 ]
+then
+  echo "New Files: " | sed 's#\(.*\)#\x1b[1;31m\1\x1b[00m#'
+  count=0
+  while [ $count -lt ${#FILES_NEW[*]} ]    
+  do
+     echo ${FILES_NEW[$count]}
+     ((count++))
+  done
+fi 
+

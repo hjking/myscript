@@ -1,0 +1,407 @@
+
+# Set the email address you want as your default 'from' address
+set from="King Hom <bestkindy@gmail.com>"
+
+# Set the path to where you want all of your mail files kept
+set folder="~/Mail"
+
+# Set the path to where you want incoming (unsorted) mail put
+set spoolfile="~/Mail/spool"
+
+set pop_host="pop.gmail.com"
+set pop_delete=yes
+set pop_user="bestkindy"
+set pop_pass="************"
+set pop_checkinterval=10
+
+############
+# The rest of these settings you can mess with at your leisure, or just delete
+# if you want...
+set abort_unmodified=no # automatically abort replies if I don't
+                                # change the message
+set alias_file="~/.aliases"
+#set allow_8bit         # never do Q-P encoding on legal 8-bit chars
+#set arrow_cursor       # use -> instead of hiliting the whole line
+set ascii_chars         # use ASCII instead of ACS chars for threads
+#set askbcc
+#set askcc
+set attribution="On %d, %n wrote:"  # how to attribute replies
+set autoedit            # go to the editor right away when composing
+set auto_tag            # always operate on tagged messages
+set beep                # beep when an error occurs
+set beep_new            # beep when new mail arrives
+set charset="iso-8859-15"   # character set for your terminal
+set check_new=yes
+set collapse_unread     # don't collapse threads with unread messages
+set noconfirmappend     # don't ask me if i want to append to mailboxes
+set confirmcreate       # prompt when creating new files
+set copy=yes            # always save a copy of outgoing messages
+set date_format="%Y-%m-%d %H.%M %Z"
+set delete=yes          # purge deleted messages without asking
+set edit_headers=no     # don't let me edit the message header when composing
+set editor="/usr/local/bin/vim"     # editor to use when composing messages
+#set editor="[ -z $DISPLAY ] && vim || gvim -f"
+set fast_reply          # skip initial prompts when replying or forwarding
+set fcc_attach=no       # keep attachments in copies of sent messages?
+# Folder Format: file browser display settings
+# C:file no, t:tagged?, N:new, F:file perms, l:hard links, 
+# u:owner, g:group, s:size, d:date, f:filename
+set folder_format="%t %N %F %-8.8u %-8.8g %8s %d %f"
+set followup_to=yes     # set follow-up header for lists
+set force_name=no       # fcc by recipient, create if mailbox doesn't exist
+set forward_decode=yes  # weed and MIME decode forwaded messages
+set forward_format="[%a: %s]"   # subject to use when forwarding messages
+set forward_quote=no        # quote the header and body of forward msgs
+set gecos_mask="^[^,]*"     # for expanding aliasess
+#set hdr_format="%4C %Z %{%m/%d} [%2N] %-15.15F (%4c) %s"
+#set hdr_format="%4C %Z %{%m/%d} %-15.15F %4c  %s" # format of the index
+set hdr_format="%4C %Z %{%d.%b.%y} [%2N] %-27.27F (%3l) %s"
+set hdrs=yes            # include `my_hdr' lines in outgoing messages
+set header=no           # include message header when replying
+set help=yes            # show the help lines
+set hidden_host=yes
+set history=20          # number of lines of history to remember
+set honor_followup_to=yes   # honour Followup-To headers for group replies
+#set hostname="esatclear.ie"    # my DNS domain
+set include=yes         # always include messages when replying
+set indent_string="> "      # how to quote replied text
+# Message index display settings
+# C:msg no, Z:status flag, b:filename d:date time,
+# L:lists/from, l:no lines, s:subject
+#set index_format="%Z %{%b %d} %-20.20L %s (%4l)"
+set index_format="%Z %{%b %d} %-20.20L %s (%4c)"
+set locale="en_IE"          # locale to use for printing time
+set mail_check=60       # how often(in seconds) to poll for new mail
+#set mailcap_path="~/.mailcap:~/unixmail/etc/mailcap"
+set mailcap_path="~/.mailcap"
+set mark_old=no         # i don't care about whether a message is old
+set markers=yes      # mark wrapped lines in pager?
+set mbox=~/Mail/inbox           # where to store read messages
+set mbox_type=mbox
+set metoo=no            # remove my address when replying
+set menu_scroll=yes     # implicit next-page/prev-page
+set mime_forward=no     # use message/rfc822 type to forward messages
+set move=no             # don't ask about moving messages, just do it
+#set pager=vim          # some people prefer an external pager
+set pager_context=0     # no. of lines of context to give when scrolling
+set pager_format="-%S- %C/%T: %-20.20n %s"  # format of the pager status bar
+set pager_index_lines=10        # how many index lines to show in the pager
+set pager_stop          # don't move to the next message on next-page
+#set pgp_strict_enc     # use Q-P encoding when needed for PGP
+set postponed=~/Mail/postponed  # mailbox to store postponed messages in
+set post_indent_string='---end quoted text---'
+set print=ask-yes       # ask me if I really want to print messages
+set print_command=/bin/false    # how to print things (I like to save trees)
+set prompt_after=yes    # ask me for a command after the external pager exits
+set quit=yes
+set quote_regexp="^ *[a-zA-Z]*[>#}]"    # how to catch quoted text
+set read_inc=10         # show progress when reading a mailbox
+set realname="King Hom"
+set recall=ask-yes          # prompt to recall postponed messages
+set record=~/Mail/outbox        # default location to save outgoing mail
+set reply_to=yes            # always use reply-to if present
+set reply_self=no
+set reply_regexp="^(re:[ \t]*)+"# how to identify replies in the subject:
+set resolve=yes         # move to the next message when an action is performed
+set reverse_alias=yes   # attempt to look up my names for people
+set reverse_name=yes    # use my address as it appears in the message
+                        # i am replying to
+set save_empty=no       # remove files when no messages are left
+set save_name=no        # save outgoing messages by recipient
+set score=yes
+set send_charset="iso-8859-1:us-ascii:utf-8"
+set sendmail="/usr/sbin/sendmail -oem -oi -fgavcos@esatclear.ie"
+#set sendmail="/usr/sbin/ssmtp -v"  # how to deliver mail
+set shell="/bin/bash"       # program to use for shell escapes
+set sig_dashes=yes      # insert --\n before my signature
+set signature="~/.signature"    # file which contains my signature
+set smart_wrap=yes      # wrap long lines at a word boundary
+# I subscribe to a lot of mailing lists, so this is _very_ useful.  This
+# groups messages on the same subject to make it easier to follow a
+# discussion.  Mutt will draw a nice tree showing how the discussion flows.
+set sort=reverse-last-date          # primary sorting method
+#set sort=threads       # primary sorting method
+set sort_alias=address
+set sort_aux=reverse-date-received  # how to sort subthreads
+set sort_aux=last-date      # date of the last message in thread
+set sort_browser=reverse-last-date  # how to sort files in the dir browser
+# b:# of mboxes with new mail, d:# of deleted msgs, h:hostname,
+# f:full path, F: # of flagged msgs, l:size of current mbox,
+# L:size of msgs shown, m: # of msgs in mbox, M:no of msgs shown,
+# n:# of new msgs, o: no of old msgs, p: no of postponed msgs,
+# P:% index, r:read-only indicator, s:sorting method, S:aux sorting method,
+# t:# tagged msgs, u:# unread msgs, v:Mutt version string
+set status_format="%v: %f (%s) [%M/%m]  %l [N=%n, X=%t,post=%p]"
+set status_on_top=yes       # some people prefer the status bar on top
+#set strict_threads     # don't thread by subject
+set tilde=yes           # virtual lines to pad blank lines in the pager
+#set timeout=0          # timeout for prompt in the index menu
+set tmpdir=~/tmp        # where to store temp files
+set to_chars=" +TCFL"# default values
+#set use_8bitmime       # enable the -B8BITMIME sendmail flag
+#set nouse_domain       # don't qualify local addresses with $domain
+set use_from=yes        # always generate the `From:' header field
+set user_agent=yes      # indicate mutt version in outgoing header
+#set use_mailcap=yes    # always use a mailcap entry when found
+#set pgp_verify_sig=no  # don't automatically verify message signatures
+set visual="/usr/bin/vim"   # editor invoked by ~v in the builtin editor
+#set nowait_key         # prompt when a pipe returns normal status
+set weed=yes            # default, weed headers on reply, forward
+set wrap_search=yes     # searches wrap around end of mbox
+set write_inc=25        # show progress while writing mailboxes
+
+# only enable the following IFF you have sendmail 8.8.x or you will not
+# be able to send mail!!!
+#set dsn_notify='failure,delay' # when to return an error message
+#set dsn_return=hdrs        # what to return in the error message
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+#
+# Header fields I don't normally want to see
+#
+ignore *        # this means "ignore all lines by default"
+
+# I do want to see these fields, though!
+unignore    From: from: subject to cc mail-followup-to date x-mailer x-url
+
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+#
+# Color definitions (black background)
+#
+
+color hdrdefault magenta black
+color quoted brightyellow default
+color signature brightred default
+color indicator brightyellow blue
+color error brightred default
+color status brightyellow magenta
+color tree magenta default  # the thread tree in the index menu
+color tilde magenta default
+color message brightred default
+color markers green default
+color attachment green default
+color search default green  # how to hilite search patterns in the pager
+
+color header brightred default ^(From):
+color header brightblue default ^(Subject):
+color header brightcyan default ^(To|Cc|Bcc):
+color header brightgreen default ^(Date):
+color body brightgreen default "(ftp|http)://[^ ]+" # point out URLs
+color body brightmagenta default [-a-z_0-9.]+@[-a-z_0-9.]+  # e-mail addresses
+color underline brightgreen default
+
+# attributes when using a mono terminal
+#mono quoted bold
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+#
+# Color definitions
+#
+
+#color normal black white
+#color hdrdefault red white
+#color quoted brightblue white
+#color signature red white
+#color indicator white brightred
+#color error brightred white
+#color status white blue
+#color tree magenta white   # the thread tree in the index menu
+#color tilde magenta white
+#color message cyan white
+#color markers cyan white
+#color attachment brightmagenta white
+#color search default green # how to hilite search patterns in the pager
+
+#color header brightred white ^(From|Subject):
+#color body magenta white "(ftp|http)://[^ ]+"  # point out URLs
+#color body magenta white [-a-z_0-9.]+@[-a-z_0-9.]+ # e-mail addresses
+#color underline brightgreen white
+
+# attributes when using a mono terminal
+#mono header underline ^(From|Subject):
+#mono quoted bold
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+#
+# Key bindings
+#
+#   maps:
+#       alias       alias menu
+#       attach      attachment menu
+#       browser     directory browser
+#       compose     compose menu
+#       index       message index
+#       pgp     pgp menu
+#       postpone    postponed message recall menu
+#       generic     generic keymap for all of the above
+#       editor      line editor
+#       pager       text viewer
+#       
+
+#bind generic "\e<" first-entry # emacs-like bindings for moving to top/bottom
+#bind generic \e> last-entry
+#bind generic { top-page
+#bind generic } bottom-page
+#bind generic \177 last-entry
+
+macro index \cb |urlview\n  # simulate the old browse-url function
+
+#macro index S s+spam\n
+#macro pager S s+spam\n
+
+bind pager G bottom # just like vi and less
+bind pager t top
+#macro   pager   \Ck     "|pgp -kaf^M"   # a comment is valid here
+#macro pager X "|morepgp^M" # pipe PGP message to a script
+
+#bind editor \cy eol    # make ^Y jump to the end of the line
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+#
+# User Defined Headers
+#
+
+#my_hdr X-Useless-Header: Look ma, it's a \# sign! # real comment
+my_hdr X-Mailer: Mutt/v1.4i
+my_hdr X-Operating-System: `uname -s`
+#my_hdr X-Url: http://myhome.iolfree.ie/~gavcos
+my_hdr From:bestkindy@gmail.com
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+#
+# Specify default filename when saving messages
+#
+#   save-hook [!]<pattern> <mailbox>
+#
+# <mailbox> is provided as default when saving messages from <pattern>
+
+save-hook '~s ilug' +linux
+save-hook '~s ILUG' +linux
+save-hook mutt-users +mutt-users
+save-hook @gmail.com +brewer
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+#
+# Multiple spool mailboxes
+#
+#   mbox-hook [!]<pattern> <mbox-mailbox>
+#
+# Read mail in <pattern> is moved to <mbox-mailbox> when <pattern> is
+# closed.
+
+#mbox-hook =mutt-users.in =mutt-users
+#mbox-hook +TEST +inbox
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+#
+# Change settings based upon message recipient
+#
+#   send-hook [!]<pattern> <command>
+#
+# <command> is executed when sending mail to an address matching <pattern>
+
+send-hook mutt- 'set signature=~/.signature;
+my_hdr From: King Hom <bestkindy@gmail.com>'
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+#
+# Specify where to save composed messages
+#
+#   fcc-hook [!]<pattern> <mailbox>
+#
+# <pattern> is recipient(s), <mailbox> is where to save a copy
+
+fcc-hook katie +katie
+#fcc-hook bob +bob
+
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+#
+# Change settings based on mailbox
+#
+#   folder-hook [!]<pattern> <command>
+#
+# <command> is executed when opening a mailbox matching <pattern>
+folder-hook spool set sort=last-date
+folder-hook irishrugby set sort=threads
+folder-hook vim set sort=date-sent
+folder-hook inbox set sort=date-sent
+folder-hook linux set sort=threads
+#folder-hook pop.esatclear.ie my_hdr From: gavcos@esatclear.ie
+#folder-hook pop.mail.yahoo.com my_hdr From: schmerve@yahoo.com
+
+#folder-hook . 'set reply_regexp="^re:[ \t]*"'
+
+# this mailing list prepends "[WM]" to all non reply subjects, so set
+# $reply_regexp to ignore it
+#folder-hook +wmaker 'set reply_regexp="^(re:[ \t]*)?\[WM\][ \t]*"'
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+#
+# Aliases
+#
+#   alias <name> <address> [ , <address> ... ]
+source ~/.aliases
+#alias exam "\# to annoy michael" <user@host>
+#alias me Michael Elkins <me@mutt.org> # me!
+#alias mutt-dev Mutt Development List <mutt-dev@mutt.org> # power users
+#alias mutt-users Mutt User List <mutt-users@mutt.org>
+#alias mutt-announce Mutt Announcement List <mutt-announce@mutt.org>
+#alias wmaker WindowMaker Mailing List <wmaker@eosys.com>
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+#
+# Mailboxes to watch for new mail
+#
+#   mailboxes <path1> [ <path2> ... ]
+#
+
+#mailboxes ! +mutt-dev +mutt-users +open-pgp +wmaker +hurricane +vim +ietf \
+#   +drums
+mailboxes `echo $HOME/Mail/*`
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+#
+# Specify the order of the headers to appear when displaying a message
+#
+#   hdr_order <hdr1> [ <hdr2> ... ]
+#
+
+unhdr_order *               # forget the previous settings
+hdr_order date from subject to cc
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+#
+# Identify mailing lists I subscribe to
+#
+#   lists <list-name> [ <list-name> ... ]
+
+subscribe mutt-users linux
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+#
+# Automatically use entries from ~/.mailcap to view these MIME types
+#
+#   auto_view <type> [ <type> ... ]
+auto_view application/msword
+auto_view application/x-msword
+auto_view application/x-gunzip
+auto_view application/x-gzip
+auto_view text/html
+auto_view text/x-vcard
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+#
+# Scoring
+#
+#   score <pattern> <value>
+#
+# 9999 and -9999 are special values which cause processing of hooks to stop
+# at that entry.  If you prefix the score with an equal sign (=), the score
+# is assigned to the message and processing stops.
+
+#score '~f ^me@cs\.hmc\.edu$' 1000
+#score '~t mutt | ~c mutt' =500
+#score '~f aol\.com$' -9999
+

@@ -1,0 +1,13 @@
+#!/bin/bash
+
+cvs status 2> /dev/null | grep File | grep "Modified\|Needs Merge" > ~/temp/cvs_dirty_temp
+
+count = 0
+while read line
+do
+    #echo $count. $line
+    line = ${line#File: }
+    line = ${line%status: *}
+    find . -name $line -exec echo {} \; | grep -v "/deploy\|/classes"  | sed 's#\(.*\)#\x1b[1;31m\1\x1b[00m#'
+    ((count++))
+done < ~/temp/cvs_dirty_temp

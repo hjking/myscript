@@ -1,0 +1,47 @@
+#! /bin/csh
+#		7Xdc - design compiler launcher
+#
+#	Revision History:
+#	Rev.	Date		Author		Description
+#	-----------------------------------------------------------------------
+#	1.00	2008/11/21	H.Sato		First Release
+#	1.10	2008/11/26	H.Sato		Error と"Redefining macro"を$logf_picに追加
+#									CVSROOTを追加
+#									改版履歴を追加
+#	1.20	2008/12/02	H.Sato		$logf_picの抜き出し方法を修正(単純にgrep)。
+#	1.30    2009/01/17  H.Sugihara  CVSROOTを変更
+#
+
+#osada# environment read
+source $SYNTH_PATH/SETUP_please_source_this
+#date > $logf
+#echo "======================================================================================" >> $logf
+#echo 'Galileo2 7Xdc Ver1.20' >> $logf
+#echo "======================================================================================" >> $logf
+#echo "" >> $logf
+
+#osada# selects XG mode for dctcl for try, fast and reducing memories while compiling
+setenv DC_SHELL 1
+#cvs_syn dc_shell-xg-t $TARGET_DCSCRIPT GALILEO2_CVS dummy dummy | tee -a $logf
+source 2dc.run
+dc_shell-xg-t #-f $TARGET_DCSCRIPT | tee -a $logf
+
+# link info
+#echo "======< link information >============================================================" >> $logf
+#echo 'ls -l `find . -type l`' >> $logf
+#ls -l `find . -type l` >> $logf
+#echo "======================================================================================" >> $logf
+#echo "" >> $logf
+
+#grep  Latch				$logf	>  $logf_pic
+#grep  loop				$logf	>> $logf_pic
+#grep  wired				$logf	>> $logf_pic
+#grep  multiple-driver	$logf	>> $logf_pic
+#grep  Error				$logf	>> $logf_pic
+#grep "Redefining macro"	$logf	>> $logf_pic
+
+
+#date >> $logf
+#echo "" >> $logf
+
+#END

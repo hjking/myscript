@@ -1,0 +1,59 @@
+#!/bin/csh -f
+
+# ============================================ #
+#	ModelSim Lincence Setup
+# ============================================ #
+setenv LM_LICENSE_FILE 1717@earth
+
+# ============================================ #
+#	ModelSim Environment Setup
+# ============================================ #
+setenv MTI_HOME /cadtools/modelsim6.5b/modeltech/
+set path = ( $path $MTI_HOME/bin )
+
+# ============================================ #
+#	USER DEFINE PATH
+# ============================================ #
+setenv SIMTMPDIR galileo_founder
+#setenv SIMTMPDIR test
+
+# ============================================ #
+#	ModelSim compile path Setup
+# ============================================ #
+setenv WORK /tmp/$USER/$SIMTMPDIR/work
+setenv SIMLINK simlink
+setenv LIBLINK liblink
+
+if ( ! -d /tmp/$USER ) then
+	mkdir /tmp/$USER
+endif
+
+if ( ! -d /tmp/$USER/$SIMTMPDIR ) then
+	mkdir /tmp/$USER/$SIMTMPDIR
+endif
+
+if ( ! -d $WORK ) then
+	mkdir $WORK
+endif
+
+if ( ! -f $WORK/_info ) then
+	vlib $WORK
+	vmap work $WORK
+endif
+
+# ============================================ #
+#	PSC Plain Code Sim Environment
+# ============================================ #
+setenv GALILEO_PSC_DIR `pwd`/psclink_plain	
+
+# ============================================ #
+#	Simulation Script
+# ============================================ #
+vsim -lib work +no_notifier +nocheckALL +notimingcheck -t 1ps -voptargs=+acc=rn+/TOTAL_TEST/GALILEO_WRAPPER/GALILEO/GCORE -voptargs=+acc=rn+ibm_memory_bist_generic -voptargs=+acc=rn+ibm_memory_dram_generic -voptargs=+acc=rn+ibm_memory_farr_generic -voptargs=+acc=rn+ibm_memory_rf2_generic -voptargs=+acc=rn+ibm_memory_sram1_generic -voptargs=+acc=rn+ibm_memory_sram1fh_generic -voptargs=+acc=rn+ibm_memory_sram2_generic -voptargs=+acc=rn+ibm_memory_sram2fh_generic -voptargs=+acc=rn+ibm_memory_sram4ptr_generic -voptargs=+acc=rn+ibm_memory_sram4ptr_generic TOTAL_TEST
+write report -l cellr_all.txt
+write cell_report -outfile cell_rpt_all.txt
+tcheck_set -q /TOTAL_TEST -r OFF
+vcd file /tmp/nakao/vcdfile.vcd
+vcd add -r -file /tmp/nakao/vcdfile.vcd /TOTAL_TEST/*
+run -all
+

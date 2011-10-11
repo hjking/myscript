@@ -1,0 +1,8 @@
+#!/bin/csh -f
+# -------------------------------------------- #
+#       Path setting
+# -------------------------------------------- #
+set path = ( /cadtools/novas61v1/bin $path )
+setenv LM_LICENSE_FILE 5219@fusion1
+
+vcd2fsdb $1 -o $2

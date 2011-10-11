@@ -1,0 +1,112 @@
+#!/bin/csh -f
+##########################################################################
+#
+#	Wave Viewer Invoke Script
+#
+#	1. Verdi
+#		> 2XVerdi
+#
+##########################################################################
+
+
+# ============================================ #
+#       User Define Verdi Environment
+# ============================================ #
+setenv USER_WAVE_DIR		/tmp/${USER}/sim0/wave
+#setenv USER_WAVE_DIR		.
+setenv WAVE_FILE		test_000.fsdb
+
+setenv USER_RC_DIR		.
+setenv RC_FILE			Ext_signal.rc
+
+
+# -------------------------------------------- #
+#       Tool Select
+# -------------------------------------------- #
+set path = ( /cadtools/novas61v1/bin $path )
+setenv LM_LICENSE_FILE 5219@fusion1
+
+
+# -------------------------------------------- #
+#       Tool Select
+# -------------------------------------------- #
+	setenv WAVE_TOOL	VerdiJP
+#	setenv WAVE_TOOL	verdi
+	echo "VERDI is being invoked."
+
+# ============================================ #
+#	DDR2MC vendor Macro Switch
+# ============================================ #
+#	SubSystem Model Use    : set USE_MACRO_SW = ONをDefine
+#							 set USE_MACRO_SW = OFFをComment Out
+#	SubSystem Model No Use : set USE_MACRO_SW = ONをComment Out
+#							 set USE_MACRO_SW = OFFをDefine
+#
+
+#set USE_IBM_MACRO_SW = ON
+set USE_IBM_MACRO_SW = OFF
+
+if ( ${USE_IBM_MACRO_SW} == ON ) then
+	setenv IBM_MODEL_SW _tb_IBM_MODEL_
+	setenv ORG_TREE sub_system.tree
+else
+	setenv IBM_MODEL_SW ""
+	setenv ORG_TREE sub_system_enc.tree
+endif
+
+
+# ============================================ #
+#	Vendor Lib Set
+# ============================================ #
+# ベンダライブラリが必要な場合はif分のON以下をカスタマイズすること
+# 下記はIBM使用時の例となる。
+#
+
+#set USE_VENDOR_LIB_SW = ON
+set USE_VENDOR_LIB_SW = OFF
+
+if ( ${USE_VENDOR_LIB_SW} == ON ) then
+	setenv VENDOR_LIBLARY \
+	"-y ./liblink/STANDARD_LIB/ibm_cu08/v7.0fix/verilog \
+	-y ./liblink/STANDARD_LIB/ibm_cu08/v7.0/verilog \
+	-y ./liblink/CUSTOM_LIB/verilog	\
+	-y ./liblink/CUSTOM_LIB/verilog_wrapper	"
+else
+	setenv VENDOR_LIBLARY ""
+endif
+
+
+# -------------------------------------------- #
+#       Select Tree Type Encrypted or Plain
+#       "for Galileo setting"
+# -------------------------------------------- #
+#	setenv ORG_TREE		sub_system.tree
+
+#cat ./simlink/${ORG_TREE} > debussy.tree
+cat ./${ORG_TREE} > debussy.tree
+
+
+# ============================================ #
+#       Invoke Wave Viewer
+# ============================================ #
+
+${WAVE_TOOL}				\
+	-encode EUCJP			\
+	-autoalias				\
+#	-timescale=1ns/1ps		\
+#	-2001					\
+#	+verilog2001ext+.v+		\
+#	-sv						\
+	+notimingcheck			\
+	+define+IBM_RTL_WRAPPER	\
+	+define+IBM_RTL_NOQEE	\
+	${IBM_MODEL_SW}			\
+	+libext+.v+.vcs+.vp		\
+	-f ./debussy.tree		\
+	${VENDOR_LIBLARY}			\
+#	-sswr ${USER_RC_DIR}/${RC_FILE}	\
+	-ssf ${USER_WAVE_DIR}/${WAVE_FILE}
+
+
+
+

@@ -1,0 +1,165 @@
+#!/bin/csh -f
+
+#################################################################
+# Author:       Hong Jin(hong_jin@founder.com)
+# Version:      1.1
+# Last Change:  2010/05/08-18:17 .
+
+#================ USAGE ================
+# 1. Run 1 testcase, generate default log(./logs/vcs_sim.log)
+#       % 1Xvcs TEST_NUM
+# 2. Run 1 testcase, generate spcified log
+#       % 1Xvcs all
+# 3. Run all testcases, generate default log and coverage
+#       % 1Xvcs all cov
+#
+#################################################################
+
+#===================================
+# LICENSE FILE
+#===================================
+setenv LM_LICENSE_FILE 27000@fusion1
+
+#===================================
+# VCS Environment
+#===================================
+setenv VCS_HOME /cadtools/vcs/vcsD-2009.12
+setenv PLATFORM LINUX
+setenv VERDI_HOME /cadtools/novas/Novas-201001
+setenv VERDI_PLI_VCSD ${VERDI_HOME}/share/PLI/vcsd_latest/LINUX/vcsd.tab
+setenv VERDI_PLI ${VERDI_HOME}/share/PLI/vcsd_latest/LINUX/pli.a
+set path = ( $VCS_HOME/bin $path )
+
+#===================================
+# User Define Simulation Environment
+#===================================
+setenv USER_LOG_DIR                 ./logs
+setenv USER_VCS_DIR                 ./vcs_sim
+setenv USER_OBJECT_DIR              ${USER_VCS_DIR}/object
+setenv USER_SIMV_DIR                ${USER_VCS_DIR}/simv
+setenv USER_WAVE_DIR                ./wave
+setenv VCS_LOG_FILE                 ${USER_LOG_DIR}/vcs_sim.log
+setenv SIM_LIST                     ./sim.list
+
+set COVERAGE_TRIGGER = OFF
+
+# Check if the dirs exists
+if (! -d ${USER_LOG_DIR}) then
+    echo "===================================="
+    echo "          Creating Log dir"
+    echo "===================================="
+    mkdir -p ${USER_LOG_DIR}
+endif
+if (! -d ${USER_VCS_DIR}) then
+    echo "===================================="
+    echo "      Creating VCS Sim dir"
+    echo "===================================="
+    mkdir -p ${USER_VCS_DIR}
+endif
+if (! -d ${USER_SIMV_DIR}) then
+    echo "===================================="
+    echo "      Creating simv dir..."
+    echo "===================================="
+    mkdir -p ${USER_SIMV_DIR}
+endif
+if (! -d ${USER_OBJECT_DIR}) then
+    echo "===================================="
+    echo "      Creating Object dir..."
+    echo "===================================="
+    mkdir -p ${USER_OBJECT_DIR}
+endif
+if (! -d ${USER_WAVE_DIR}) then
+    echo "===================================="
+    echo "      Creating Wave dir..."
+    echo "===================================="
+    mkdir -p ${USER_WAVE_DIR}
+endif
+
+if ( $#argv == 0 ) then
+    echo " ------------------------------------------------------------ "
+    echo "                 Usage of This Script                         "
+    echo " ------------------------------------------------------------ "
+    echo " 1. Run 1 testcase, generate log file (./logs/Testcase_NUM.log)   "
+    echo "       % ./1Xvcs Testcase_NUM                                     "
+    echo " 2. Run all testcases, generate default log                   "
+    echo "       % ./1Xvcs all                                          "
+    echo " 3. Run all testcases, generate default log and coverage      "
+    echo "       % ./1Xvcs all cov                                      "
+    echo " ------------------------------------------------------------ "
+else if ( $#argv == 1 ) then
+    if ($1 == "all") then
+        echo "---------- Run all testcases ----------"
+        cp ./testcase_list.v    ${SIM_LIST}
+        setenv LOG_FILE         ${VCS_LOG_FILE}
+    else
+        echo " Testcase Number is: " $1
+        echo $1 > ${SIM_LIST}
+        setenv LOG_FILE         ${USER_LOG_DIR}/$1.log
+    endif
+else if ( $#argv == 2 ) then
+    if ( $1 == "all" && $2 == "cov" ) then
+        set COVERAGE_TRIGGER = ON
+    else
+        set COVERAGE_TRIGGER = OFF
+    endif
+endif
+
+# backup previous log file
+cp $USER_LOG_DIR/$LOG_FILE $USER_LOG_DIR/${LOG_FILE}_bakup
+
+if( ${COVERAGE_TRIGGER} == ON ) then
+    setenv COVERAGE \
+    "-cm line+branch+fsm+cond+tgl+path \
+    -cm_dir ./sim.cov \
+    -cm_name vcov \
+    -cm_cond std \
+    -cm_tgl mda \
+    -cm_hier cov.conf"
+else
+    setenv COVERAGE ""
+endif
+
+
+# Time to rock and roll
+#============================================================
+# Simulation Script 
+# -R: exexute simulation after compile
+# -l: put output to log file
+# +incdir: files directories
+# +libext: search files with these extension in Lib
+# -y: Lib link folder
+# -f: tree file
+#============================================================
+vcs \
+    +vcs+lic+wait                        \
+    -R -PP -Mupdate                      \
+    +libverbose                          \
+    +define+PLL_resolution_1ps           \
+    -P ${VERDI_PLI_VCSD}                 \
+    ${VERDI_PLI} +vcsd                   \
+    +fsdb_autoflush                      \
+    +lint=PCWM                           \
+    -l ${USER_LOG_DIR}/${LOG_FILE}       \
+    -Mdir=${USER_OBJECT_DIR}             \
+    -o ${USER_SIMV_DIR}                  \
+    +vcsd                                \
+    +v2k                                 \
+    +memcbk                              \
+    +error+100                           \
+    -notice                              \
+    +notimingcheck                       \
+    ${COVERAGE}                          \
+    -timescale=1ps/1ps                   \
+    +incdir+.                            \
+    +libext+.v+.vcs+.vp+.sv              \
+    -f ./sim.tree
+#vcs -cm_pp -cm line
+
+
+# Cleanup
+rm ${SIM_LIST}
+
+#=============================================================
+# END
+#=============================================================
+

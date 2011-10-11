@@ -1,0 +1,11 @@
+initial begin
+    $fsdbDumpfile("tb.fsdb");
+    $fsdbDumpvars;
+end
+
+
+vlog
+${NOVAS_HOME}/share/PLI/modelsim_pli_latest/${PLATFORM}/novas_vlog.v
+
+vsim
+-pli {NOVAS_HOME}/share/PLI/modelsim_pli_latest/${PLATFORM}/libpli.so
